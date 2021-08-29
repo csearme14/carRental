@@ -1,0 +1,16 @@
+{
+  "name": "carrental",
+  "version": "1.0.0",
+  "description": "Car Rental Website",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Eldor Togaymurotov",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.17.1",
+    "express-handlebars": "^5.3.3"
+  },
+  "devDependencies": {}
+}
