@@ -18,6 +18,11 @@ app.get('/',(req,res) => {
         title: 'Home'
     });
 });
+app.get('/about',(req,res) => {
+    res.render('about',{
+        title: 'About'
+    });
+});
 app.listen(port,() => {
- console.log('Server is up on port' + port);   
+    console.log(`Server is up on port ${port}`);
 });
