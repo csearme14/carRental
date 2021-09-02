@@ -14,13 +14,16 @@ app.use(express.static('public'));
 const port = 3000;
 //hand home route
 app.get('/',(req,res) => {
-    res.render('home',{
-        title: 'Home'
-    });
+    res.render('home');
 });
 app.get('/about',(req,res) => {
     res.render('about',{
         title: 'About'
+    });
+});
+app.get('/contact',(req,res) => {
+    res.render('contact',{
+        title:'Contact us'
     });
 });
 app.listen(port,() => {
