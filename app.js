@@ -26,6 +26,11 @@ app.get('/contact',(req,res) => {
         title:'Contact us'
     });
 });
+app.get('/signup',(req,res) =>{
+    res.render('signupForm',{
+        tital:'Register'
+    });
+});
 app.listen(port,() => {
     console.log(`Server is up on port ${port}`);
 });
