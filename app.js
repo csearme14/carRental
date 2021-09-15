@@ -1,8 +1,20 @@
 //load modules
 const express = require('express');
 const exphbs = require('express-handlebars');
+const mongoose = require('mongoose');
 //init app
 const app = express();
+//load Files
+const keys = require('./config/keys');
+const User = require('./moderls/user');
+//connect to mongoDB
+mongoose.connect(keys.MongoDB,{
+    userNewUrlParser: true
+},() => {
+    console.log('MongoDB is connected ..')
+}).catch((err) => {
+    console.log(err);
+});
 //setup view engine
 app.engine('handlebars',exphbs({
     defaultLayout:'main'

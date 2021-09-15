@@ -4,13 +4,14 @@
   "description": "Car Rental Website",
   "main": "app.js",
   "scripts": {
-    "start":"node app.js"
+    "start": "node app.js"
   },
   "author": "Eldor Togaymurotov",
   "license": "ISC",
   "dependencies": {
     "express": "^4.17.1",
-    "express-handlebars": "^5.3.3"
+    "express-handlebars": "^5.3.3",
+    "mongoose": "^6.0.5"
   },
   "devDependencies": {
     "nodemon": "^2.0.12"
