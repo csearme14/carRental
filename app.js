@@ -2,16 +2,21 @@
 const express = require('express');
 const exphbs = require('express-handlebars');
 const mongoose = require('mongoose');
+const bodyParser = require('body-parser');
 //init app
 const app = express();
+// setup body parser middleware
+app.use(bodyParser.urlencoded({extended:false}));
+app.use(bodyParser.json());
 //load Files
 const keys = require('./config/keys');
-const User = require('./moderls/user');
-//connect to mongoDB
-mongoose.connect(keys.MongoDB,{
-    userNewUrlParser: true
-},() => {
-    console.log('MongoDB is connected ..')
+//load collections
+const User = require('./models/user');
+//const Contact = require('./models/contact');
+//connect to mongoDB                    
+mongoose.connect(keys.MongoDB,() => {
+    console.log('MongoDB is connected ..');
+},{ useNewUrlParser: true
 }).catch((err) => {
     console.log(err);
 });
@@ -38,11 +43,24 @@ app.get('/contact',(req,res) => {
         title:'Contact us'
     });
 });
+//save contact from data
+app.post('/contact',(req,res) => {
+    console.log(req.body);
+});
 app.get('/signup',(req,res) =>{
     res.render('signupForm',{
         tital:'Register'
     });
 });
+app.post('/signup' , (req , res)=>{
+    const body = req
+    console.log(body);
+    return res.json({message : "OK"})
+})
 app.listen(port,() => {
-    console.log(`Server is up on port ${port}`);
+    console.log(`Server is running on part ${port}`);
 });
+
+//โครงสร้าง ของ ฐานข้อมูล มันไม่เหมือนกับที่ต้องการเก็บ แก้ models
+//ต้องเส้น post ของ สมัคร ทุกเส้น
+//lib has password bcryptjs

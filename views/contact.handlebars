@@ -1,21 +1,21 @@
 <div class="container">
     <p></p>
     <h1>ติดต่อเรา</h1>
-    <form>
+    <form action="/contact" method="POST">
         <div class="form-group">
-            <label for="exampleInputEmail1">ที่อยู่อีเมล</label>
-            <input type="email" class="form-control" id="exampleInputEmail1">
+            <label for="email">ที่อยู่อีเมล</label>
+            <input type="email" name="email" class="form-control" id="email">
             <small id="emailHelp" class="form-text text-muted">เราจะไม่เปิดเผยอีเมลของคุณกับคนอื่น</small>
         </div>
         <div class="form-group">
             <label for="name">ชื่อ-สกุล</label>
-            <input type="text" class="form-control" id="name">
+            <input type="text" name="name" class="form-control" id="name">
         </div>
         <div class="form-group">
             <label for="message">กรอกข้อความ</label>
             <textarea name="message" id="message"class="form-control"></textarea>
         </div>
-        <button type="submit" class="btn btn-primary">ดำเนินการ</button>
+        <button type="submit" class="btn btn-primary">ส่ง</button>
     </form>
 
 </div>
