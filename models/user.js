@@ -21,9 +21,12 @@ const userSchema = new Schema({
     email: {
         type: String
     },
+    password:{
+        type: String
+    },
     date:{
-        type:Date,
-        default:Date.now
+        type: Date,
+        default: Date.now
     }
 });
 

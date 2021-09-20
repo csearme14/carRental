@@ -3,16 +3,30 @@ const express = require('express');
 const exphbs = require('express-handlebars');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
+const session = require('express-session');
+const cookieParser = require('cookie-parser');
+const passport = require('passport');
 //init app
 const app = express();
 // setup body parser middleware
 app.use(bodyParser.urlencoded({extended:false}));
 app.use(bodyParser.json());
+// configuration for authentication
+app.use(cookieParser());
+app.use(session({
+    secret:'mysecret',
+    resave: true,
+    saveUninitialized: true
+}));
+app.use(passport.initialize());
+app.use(passport.session());
 //load Files
 const keys = require('./config/keys');
 //load collections
 const User = require('./models/user');
-//const Contact = require('./models/contact');
+const Contact = require('./models/contact');
+const { count } = require('./models/user');
+const passport = require(passport); //ERROR
 //connect to mongoDB                    
 mongoose.connect(keys.MongoDB,() => {
     console.log('MongoDB is connected ..');
@@ -46,6 +60,19 @@ app.get('/contact',(req,res) => {
 //save contact from data
 app.post('/contact',(req,res) => {
     console.log(req.body);
+    const newContact = {
+        //email:req.body.email,
+        //name: req.body.name,
+        name: req.user._id,
+        message:req.body.message
+    }
+    new Contact(newContact).save((err,user) => { //เปลี่ยน User >> Contact
+        if (err){
+            throw err;
+        }else{
+            console.log('We received message from user', user);
+        }
+    });
 });
 app.get('/signup',(req,res) =>{
     res.render('signupForm',{

@@ -2,6 +2,9 @@ const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
 const contactSchema = new Schema({
+   // email: {
+     //   type: String
+   // },
     name:{
         type: Schema.Types.ObjectId,
         ref: 'User'
@@ -10,11 +13,9 @@ const contactSchema = new Schema({
         type: String
     },
     date: {
-        type:Data,
+        type:Date,
         default: Date.now
     }
 });
 
 module.exports = mongoose.model('Contact',contactSchema);
-
-//พึ่งเพิ่มมา
