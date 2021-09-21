@@ -1,32 +1,32 @@
 //load modules
-const express = require('express');
-const exphbs = require('express-handlebars');
-const mongoose = require('mongoose');
-const bodyParser = require('body-parser');
-const session = require('express-session');
-const cookieParser = require('cookie-parser');
-const passport = require('passport');
+const express       = require('express');
+const exphbs        = require('express-handlebars');
+const mongoose      = require('mongoose');
+const bodyParser    = require('body-parser');
+const session       = require('express-session');
+const cookieParser  = require('cookie-parser');
+const passport      = require('passport');
+const bcrypt        = require('bcryptjs');
 //init app
-const app = express();
+    const app = express();
 // setup body parser middleware
-app.use(bodyParser.urlencoded({extended:false}));
-app.use(bodyParser.json());
+    app.use(bodyParser.urlencoded({extended:false}));
+    app.use(bodyParser.json());
 // configuration for authentication
-app.use(cookieParser());
-app.use(session({
-    secret:'mysecret',
-    resave: true,
-    saveUninitialized: true
+    app.use(cookieParser());
+    app.use(session({
+        secret:'mysecret',
+        resave: true,
+        saveUninitialized: true
 }));
-app.use(passport.initialize());
-app.use(passport.session());
+    app.use(passport.initialize());
+    app.use(passport.session());
+
 //load Files
 const keys = require('./config/keys');
 //load collections
 const User = require('./models/user');
 const Contact = require('./models/contact');
-const { count } = require('./models/user');
-const passport = require(passport); //ERROR
 //connect to mongoDB                    
 mongoose.connect(keys.MongoDB,() => {
     console.log('MongoDB is connected ..');
@@ -70,20 +70,65 @@ app.post('/contact',(req,res) => {
         if (err){
             throw err;
         }else{
-            console.log('We received message from user', user);
+            console.log('เราได้รับข้อความจากผู้ใช้', user);
         }
     });
 });
-app.get('/signup',(req,res) =>{
+app.get('/signup',(req,res) => {
     res.render('signupForm',{
-        tital:'Register'
+        title:'Register'
     });
 });
-app.post('/signup' , (req , res)=>{
-    const body = req
-    console.log(body);
-    return res.json({message : "OK"})
-})
+app.post('/signup',(req , res) => {
+    console.log(req.body);
+    let errors = [];
+    if (req.body.password !== req.body.password2){
+        errors.push({text:'Password does not match'}); //รหัสผ่านไม่เหมือนกัน
+    }
+    if (req.body.password.length < 5){
+        errors.push({text:'Password must be at least 5 characters.'}); //รหัสผ่านต้องมีอย่างน้อย 5 ตัวอักษร
+    }
+    if (errors.length > 0){
+        res.render('signupForm',{
+            errors:errors,
+            firstname:  req.body.firstname,
+            lastname:   req.body.lastname,
+            password:   req.body.password,
+            password2:  req.body.password2,
+            email:      req.body.email
+        })
+    }else{
+        User.findOne({email:req.body.email})
+        .then((user) => {
+            if (user){
+                let errors = [];
+                errors.push({text:'This email already exists'}); //มีอีเมลนี้อยู่แล้ว
+                res.render('signupForm',{ //error
+                    errors:errors
+                });
+            }else{
+                //encypt password => hashfuntion salt = 10
+                let salt = bcrypt.genSaltSync(10);
+                let hash = bcrypt.hashSync(req.body.password,salt);
+
+                const newUser = {
+                    firstname:  req.body.firstname,
+                    lastname:   req.body.lastname,
+                    email:      req.body.email,
+                    password:   hash
+                }
+                new User(newUser).save((err,user) => {
+                    if (err){
+                        throw err;
+                    }
+                    if(user){
+                        console.log('New user is created'); //สร้างผู้ใช้ใหม่แล้ว
+                    }
+                })
+            }
+        })
+    }
+});
 app.listen(port,() => {
     console.log(`Server is running on part ${port}`);
 });
