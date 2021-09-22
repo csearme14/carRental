@@ -24,6 +24,14 @@ const userSchema = new Schema({
     password:{
         type: String
     },
+    
+    Id_card:{   //new
+        type: String
+    },
+    gender:{       //new sex
+        type: String
+    },
+
     date:{
         type: Date,
         default: Date.now
