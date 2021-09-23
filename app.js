@@ -7,11 +7,14 @@ const session       = require('express-session');
 const cookieParser  = require('cookie-parser');
 const passport      = require('passport');
 const bcrypt        = require('bcryptjs');
+
 //init app
     const app = express();
+
 // setup body parser middleware
     app.use(bodyParser.urlencoded({extended:false}));
     app.use(bodyParser.json());
+
 // configuration for authentication
     app.use(cookieParser());
     app.use(session({
@@ -24,9 +27,11 @@ const bcrypt        = require('bcryptjs');
 
 //load Files
 const keys = require('./config/keys');
+
 //load collections
 const User = require('./models/user');
 const Contact = require('./models/contact');
+
 //connect to mongoDB                    
 mongoose.connect(keys.MongoDB,() => {
     console.log('MongoDB is connected ..');
@@ -34,15 +39,19 @@ mongoose.connect(keys.MongoDB,() => {
 }).catch((err) => {
     console.log(err);
 });
+
 //setup view engine
 app.engine('handlebars',exphbs({
     defaultLayout:'main'
 }));
 app.set('view engine', 'handlebars');
+
 //connect client side to serve css and js files
 app.use(express.static('public'));
+
 //create port
 const port = process.env.PORT || 3000;
+
 //hand home route
 app.get('/',(req,res) => {
     res.render('home');
@@ -57,20 +66,19 @@ app.get('/contact',(req,res) => {
         title:'Contact us'
     });
 });
+
 //save contact from data
 app.post('/contact',(req,res) => {
     console.log(req.body);
     const newContact = {
-        //email:req.body.email,
-        //name: req.body.name,
         name: req.user._id,
         message:req.body.message
     }
-    new Contact(newContact).save((err,user) => { //เปลี่ยน User >> Contact
+    new Contact(newContact).save((err,user) => {
         if (err){
             throw err;
         }else{
-            console.log('เราได้รับข้อความจากผู้ใช้', user);
+            console.log('Succeed we have received a message from you', user);
         }
     });
 });
@@ -79,14 +87,16 @@ app.get('/signup',(req,res) => {
         title:'Register'
     });
 });
+
+//save signup from data
 app.post('/signup',(req , res) => {
     console.log(req.body);
     let errors = [];
-    if (req.body.password !== req.body.password2){
-        errors.push({text:'Password does not match'}); //รหัสผ่านไม่เหมือนกัน
+    if (req.body.password !== req.body.password2){  //เปรียบเทียบรหัสผ่าน
+        errors.push({text:'Password does not match'}); 
     }
-    if (req.body.password.length < 5){
-        errors.push({text:'Password must be at least 5 characters.'}); //รหัสผ่านต้องมีอย่างน้อย 5 ตัวอักษร
+    if (req.body.password.length < 5){ //กำหนดให้รหัสผ่านต้องมีอย่างน้อย 5 ตัวอักษร
+        errors.push({text:'Password must be at least 5 characters.'});
     }
     if (errors.length > 0){
         res.render('signupForm',{

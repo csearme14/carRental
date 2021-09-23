@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
-
+//บันทึกข้อมูลลงใน MongoDB
 const userSchema = new Schema({
     facebook:{
         type: String
@@ -31,7 +31,12 @@ const userSchema = new Schema({
     gender:{       //new sex
         type: String
     },
-
+    age:{
+        typy: String
+    },
+    phone:{
+        type: String
+    },
     date:{
         type: Date,
         default: Date.now
