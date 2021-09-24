@@ -25,10 +25,10 @@ const userSchema = new Schema({
         type: String
     },
     
-    Id_card:{   //new
+    Id_card:{
         type: String
     },
-    gender:{       //new sex
+    gender:{
         type: String
     },
     age:{

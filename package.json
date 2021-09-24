@@ -9,12 +9,14 @@
   "author": "Eldor Togaymurotov",
   "license": "ISC",
   "dependencies": {
+    "@handlebars/allow-prototype-access": "^1.0.5",
     "bcryptjs": "^2.4.3",
     "body-parser": "^1.19.0",
     "cookie-parser": "^1.4.5",
     "express": "^4.17.1",
     "express-handlebars": "^5.3.3",
     "express-session": "^1.17.2",
+    "handlebars": "^4.7.7",
     "mongoose": "^6.0.5",
     "passport": "^0.4.1",
     "passport-local": "^1.0.0"

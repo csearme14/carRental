@@ -3,18 +3,17 @@ const express       = require('express');
 const exphbs        = require('express-handlebars');
 const mongoose      = require('mongoose');
 const bodyParser    = require('body-parser');
+const Handlebars    = require('handlebars');
+const { allowInsecurePrototypeAccess } = require('@handlebars/allow-prototype-access');
 const session       = require('express-session');
 const cookieParser  = require('cookie-parser');
 const passport      = require('passport');
 const bcrypt        = require('bcryptjs');
-
 //init app
     const app = express();
-
 // setup body parser middleware
     app.use(bodyParser.urlencoded({extended:false}));
     app.use(bodyParser.json());
-
 // configuration for authentication
     app.use(cookieParser());
     app.use(session({
@@ -25,13 +24,13 @@ const bcrypt        = require('bcryptjs');
     app.use(passport.initialize());
     app.use(passport.session());
 
+//load passports
+    require('./passport/local');
 //load Files
 const keys = require('./config/keys');
-
 //load collections
 const User = require('./models/user');
 const Contact = require('./models/contact');
-
 //connect to mongoDB                    
 mongoose.connect(keys.MongoDB,() => {
     console.log('MongoDB is connected ..');
@@ -39,19 +38,16 @@ mongoose.connect(keys.MongoDB,() => {
 }).catch((err) => {
     console.log(err);
 });
-
 //setup view engine
 app.engine('handlebars',exphbs({
-    defaultLayout:'main'
+    defaultLayout:'main',
+    handlebars: allowInsecurePrototypeAccess(Handlebars)
 }));
 app.set('view engine', 'handlebars');
-
 //connect client side to serve css and js files
 app.use(express.static('public'));
-
 //create port
 const port = process.env.PORT || 3000;
-
 //hand home route
 app.get('/',(req,res) => {
     res.render('home');
@@ -66,12 +62,11 @@ app.get('/contact',(req,res) => {
         title:'Contact us'
     });
 });
-
 //save contact from data
 app.post('/contact',(req,res) => {
     console.log(req.body);
     const newContact = {
-        name: req.user._id,
+        name: req.user._id,                                                                 //_id
         message:req.body.message
     }
     new Contact(newContact).save((err,user) => {
@@ -87,9 +82,8 @@ app.get('/signup',(req,res) => {
         title:'Register'
     });
 });
-
 //save signup from data
-app.post('/signup',(req , res) => {
+app.post('/signup',(req , res) => {     
     console.log(req.body);
     let errors = [];
     if (req.body.password !== req.body.password2){  //เปรียบเทียบรหัสผ่าน
@@ -105,7 +99,11 @@ app.post('/signup',(req , res) => {
             lastname:   req.body.lastname,
             password:   req.body.password,
             password2:  req.body.password2,
-            email:      req.body.email
+            email:      req.body.email,
+            phone:      req.body.phone,
+            gender:     req.body.gender,
+            age:        req.body.age,
+            id_card:    req.body.id_card
         })
     }else{
         User.findOne({email:req.body.email})
@@ -113,13 +111,22 @@ app.post('/signup',(req , res) => {
             if (user){
                 let errors = [];
                 errors.push({text:'This email already exists'}); //มีอีเมลนี้อยู่แล้ว
-                res.render('signupForm',{ //error
-                    errors:errors
+                res.render('signupForm',{
+                    errors:errors,
+                    firstname:  req.body.firstname,
+                    lastname:   req.body.lastname,
+                    password:   req.body.password,
+                    password2:  req.body.password2,
+                    email:      req.body.email,
+                    phone:      req.body.phone,
+                    gender:     req.body.gender,
+                    age:        req.body.age,
+                    id_card:    req.body.id_card
                 });
             }else{
                 //encypt password => hashfuntion salt = 10
                 let salt = bcrypt.genSaltSync(10);
-                let hash = bcrypt.hashSync(req.body.password,salt);
+                let hash = bcrypt.hashSync(req.body.password,salt); //ทำการเข้ารหัสเพิ่มความปลอดภัย
 
                 const newUser = {
                     firstname:  req.body.firstname,
@@ -132,17 +139,35 @@ app.post('/signup',(req , res) => {
                         throw err;
                     }
                     if(user){
-                        console.log('New user is created'); //สร้างผู้ใช้ใหม่แล้ว
+                        let success = [];
+                        success.push({text:'Successfully created a new account. You can log in now.'}); //แจ้งเตือนสร้างผู้ใช้ใหม่สำเร็จ
+                        success.push({text:'You can log in now.'});
+                        res.render('loginForm',{
+                            success:success
+                        })
                     }
                 })
             }
         })
     }
 });
+app.get('/displayLoginForm',(req,res) => {
+    res.render('loginForm');
+});
+app.post('/login',passport.authenticate('local',{   //เข้าสู้ระบบได้ด้วยบัญชีที่มีในฐานข้อมูลเท่านั้น
+    successRedirect:'/profile',
+    failureRedirect: '/loginErrors'    
+
+}));
+//display profile ใช้ส่งค่าไปเทียบกับฐานข้อมูลว่ามี user นั้นไหม
+app.get('/profile',(req,res) => {
+    User.findById({_id:req.user._id})                                                                           //error
+    .then((user) => {
+        res.render('profile',{
+            user:user
+        });
+    });
+});
 app.listen(port,() => {
     console.log(`Server is running on part ${port}`);
 });
-
-//โครงสร้าง ของ ฐานข้อมูล มันไม่เหมือนกับที่ต้องการเก็บ แก้ models
-//ต้องเส้น post ของ สมัคร ทุกเส้น
-//lib has password bcryptjs
