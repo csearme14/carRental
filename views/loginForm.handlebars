@@ -5,8 +5,23 @@
         <form action="/login" method="POST">
             <p></p>
             {{#each success}}
-            <p class="green center">{{text}}</p>
+                <div class="alert alert-success alert-dismissible fade show" role="alert">
+                    {{text}}
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
             {{/each}}
+            
+            {{#each errors}}
+            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                {{text}}
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            {{/each}}
+
             <div class="form-group">
                 <label for="email">Email</label>
                 <input type="text" name="email" id="email" class="form-control">

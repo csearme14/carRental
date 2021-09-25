@@ -1,0 +1,41 @@
+<div class="row">
+    <div class="col-sm"></div>
+    <div class="col-sm-5">
+    <form action="/listCar2" method="POST">
+        <div class="form-group">
+        <p></p>
+        <label for="pricePerHour">Price per hour</label>
+        <input type="number" name="pricePerhour" id="pricePerHour" class="form-control">
+        </div>
+        <div class="form-group">
+            <label for="pricePerWeek">Price per week</label>
+            <input type="number" name="pricePerWeek" id="pricePerWeek" class="form-control">
+        </div>
+        <div class="form-group">
+            <label for="location">Location</label>
+            <input type="text" name="location" id="location" class="form-control" 
+            placeholder="บ้านเลขที่ ,หมู่ ,ถนน ,อำเภอ ,ตำบล ,จังหวัด ,รหัสไปรษณีย์">
+        </div>
+        <div class="form-group">
+            <!--button class="btn btn-info upload-bth" type="button">Choose image</button>
+            <input type="file" name="image" id="upload-input" style="display: none"-->
+            <input type="file" name="image" id="image">
+        </div>
+        <div class="form-group">
+            <button type="submit" class="btn btn-primary">List a car</button>
+        </div>
+    </form>
+    </div>
+    <div class="col-sm"></div>
+</div>
+
+<!--script>
+    function fetchLocation (){
+        var location = document.getElementById('location');
+        var Autocomplete = new google.maps.places.Autocomplete(location);
+    }
+</script>
+<script 
+type="text/javascript"
+src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAlYKE1D3XJDzQumsZALFB4arCUSfiw9kM&libraries=places&callback=fetchLocation">
+</script-->

@@ -23,9 +23,15 @@ const bcrypt        = require('bcryptjs');
 }));
     app.use(passport.initialize());
     app.use(passport.session());
-
+//load helpers
+const {requireLogin,ensureGuest} = require('./helpers/authHelper');
 //load passports
     require('./passport/local');
+// make user as a global object
+app.use((req,res,next) =>{
+    res.locals.user = req.user || null;
+    next();
+});
 //load Files
 const keys = require('./config/keys');
 //load collections
@@ -49,24 +55,24 @@ app.use(express.static('public'));
 //create port
 const port = process.env.PORT || 3000;
 //hand home route
-app.get('/',(req,res) => {
+app.get('/',ensureGuest,(req,res) => {
     res.render('home');
 });
-app.get('/about',(req,res) => {
+app.get('/about',ensureGuest,(req,res) => {
     res.render('about',{
         title: 'About'
     });
 });
-app.get('/contact',(req,res) => {
+app.get('/contact',requireLogin,(req,res) => {                 
     res.render('contact',{
         title:'Contact us'
     });
 });
 //save contact from data
-app.post('/contact',(req,res) => {
+app.post('/contact',requireLogin,(req,res) => {
     console.log(req.body);
     const newContact = {
-        name: req.user._id,                                                                 //_id
+        name: req.user._id,
         message:req.body.message
     }
     new Contact(newContact).save((err,user) => {
@@ -77,13 +83,13 @@ app.post('/contact',(req,res) => {
         }
     });
 });
-app.get('/signup',(req,res) => {
+app.get('/signup',ensureGuest,(req,res) => {
     res.render('signupForm',{
         title:'Register'
     });
 });
 //save signup from data
-app.post('/signup',(req , res) => {     
+app.post('/signup',ensureGuest,(req , res) => {     
     console.log(req.body);
     let errors = [];
     if (req.body.password !== req.body.password2){  //เปรียบเทียบรหัสผ่าน
@@ -140,8 +146,7 @@ app.post('/signup',(req , res) => {
                     }
                     if(user){
                         let success = [];
-                        success.push({text:'Successfully created a new account. You can log in now.'}); //แจ้งเตือนสร้างผู้ใช้ใหม่สำเร็จ
-                        success.push({text:'You can log in now.'});
+                        success.push({text:'Successfully created a new account'}); //แจ้งเตือนสร้างผู้ใช้ใหม่สำเร็จ
                         res.render('loginForm',{
                             success:success
                         })
@@ -151,8 +156,10 @@ app.post('/signup',(req , res) => {
         })
     }
 });
-app.get('/displayLoginForm',(req,res) => {
-    res.render('loginForm');
+app.get('/displayLoginForm',ensureGuest,(req,res) => {
+    res.render('loginForm',{
+        title:'Login'
+    });
 });
 app.post('/login',passport.authenticate('local',{   //เข้าสู้ระบบได้ด้วยบัญชีที่มีในฐานข้อมูลเท่านั้น
     successRedirect:'/profile',
@@ -160,11 +167,48 @@ app.post('/login',passport.authenticate('local',{   //เข้าสู้ร�
 
 }));
 //display profile ใช้ส่งค่าไปเทียบกับฐานข้อมูลว่ามี user นั้นไหม
-app.get('/profile',(req,res) => {
-    User.findById({_id:req.user._id})                                                                           //error
+app.get('/profile',requireLogin,(req,res) => { 
+    User.findById({_id:req.user._id})                                                                          
     .then((user) => {
         res.render('profile',{
-            user:user
+            user:user,
+            title:'Profile'
+        });
+    });
+});
+app.get('/loginErrors',(req,res) =>{ //email ที่ยังไม่ได้สมัครจะไม่สามารถ login ได้
+    let errors = [];
+    errors.push({text:'User or password is incorrect'});
+    res.render('loginForm',{
+        errors:errors,
+        title:'Error'
+    });
+});
+//                                                                                                                          เพิ่มใหม่ list car route
+app.get('/listCar',requireLogin,(req,res) => {
+    res.render('listCar',{
+        title:'Listing'
+    });
+});
+app.post('/listCar',requireLogin,(req,res) => {
+    console.log(req.body);
+    res.render('listCar2',{
+        title:'Finish'
+    });
+});
+//logout for user
+app.get('/logout',(req,res) => {
+    User.findById({_id:req.user._id})
+    .then((user) => {
+        user.online = false;
+        user.save((err,user) =>{
+            if(err){
+                throw err;
+            }
+            if(user){
+                req.logout();
+                res.redirect('/');
+            }
         });
     });
 });

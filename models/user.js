@@ -14,7 +14,7 @@ const userSchema = new Schema({
     lastname:{
         type:String
     },
-    Image:{
+    image:{
         type:String,
         default: '/image/user.png'
     },
@@ -40,6 +40,10 @@ const userSchema = new Schema({
     date:{
         type: Date,
         default: Date.now
+    },
+    online:{
+        type: Boolean,
+        default: false
     }
 });
 
