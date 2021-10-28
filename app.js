@@ -184,7 +184,6 @@ app.get('/loginErrors',(req,res) =>{ //email ที่ยังไม่ได�
         title:'Error'
     });
 });
-//                                                                                                                          เพิ่มใหม่ list car route
 app.get('/listCar',requireLogin,(req,res) => {
     res.render('listCar',{
         title:'Listing'
