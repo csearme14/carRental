@@ -27,6 +27,7 @@ const bcrypt        = require('bcryptjs');
 const {requireLogin,ensureGuest} = require('./helpers/authHelper');
 //load passports
     require('./passport/local');
+    require('./passport/facebook');
 // make user as a global object
 app.use((req,res,next) =>{
     res.locals.user = req.user || null;
@@ -161,19 +162,36 @@ app.get('/displayLoginForm',ensureGuest,(req,res) => {
         title:'Login'
     });
 });
+//passport authentication
 app.post('/login',passport.authenticate('local',{   //เข้าสู้ระบบได้ด้วยบัญชีที่มีในฐานข้อมูลเท่านั้น
     successRedirect:'/profile',
     failureRedirect: '/loginErrors'    
-
 }));
+app.get('/auth/facebook',passport.authenticate('facebook',{
+    scope: ['email']
+}));
+app.get('/auth/facebook/callback',passport.authenticate('facebook',{
+    successRedirect: '/profile',
+    failureRedirect: '/'
+}));
+
 //display profile ใช้ส่งค่าไปเทียบกับฐานข้อมูลว่ามี user นั้นไหม
 app.get('/profile',requireLogin,(req,res) => { 
     User.findById({_id:req.user._id})                                                                          
     .then((user) => {
-        res.render('profile',{
-            user:user,
-            title:'Profile'
-        });
+        //เช็คว่าใครเข้าใช้งานระบบอยู่บ้าง
+        user.online = true;
+        user.save((err,user)=>{
+            if(err){
+                throw err;
+            }
+            if(user){
+                res.render('profile',{
+                    user:user,
+                    title:'Profile'
+                });
+            }
+        })
     });
 });
 app.get('/loginErrors',(req,res) =>{ //email ที่ยังไม่ได้สมัครจะไม่สามารถ login ได้
