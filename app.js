@@ -9,6 +9,7 @@ const session       = require('express-session');
 const cookieParser  = require('cookie-parser');
 const passport      = require('passport');
 const bcrypt        = require('bcryptjs');
+const formidable    = require('formidable');
 //init app
     const app = express();
 // setup body parser middleware
@@ -25,6 +26,7 @@ const bcrypt        = require('bcryptjs');
     app.use(passport.session());
 //load helpers
 const {requireLogin,ensureGuest} = require('./helpers/authHelper');
+const {upload} = require('./helpers/aws');
 //load passports
     require('./passport/local');
     require('./passport/facebook');
@@ -38,6 +40,8 @@ const keys = require('./config/keys');
 //load collections
 const User = require('./models/user');
 const Contact = require('./models/contact');
+const Car = require('./models/car');
+const car = require('./models/car');
 //connect to mongoDB                    
 mongoose.connect(keys.MongoDB,() => {
     console.log('MongoDB is connected ..');
@@ -202,16 +206,72 @@ app.get('/loginErrors',(req,res) =>{ //email ที่ยังไม่ได�
         title:'Error'
     });
 });
+//list a car route
 app.get('/listCar',requireLogin,(req,res) => {
     res.render('listCar',{
         title:'Listing'
     });
 });
 app.post('/listCar',requireLogin,(req,res) => {
-    console.log(req.body);
-    res.render('listCar2',{
-        title:'Finish'
+    const newCar = {
+        owner: req.user._id,
+        make: req.body.make,
+        model:req.body.model,
+        year: req.body.year,
+        type: req.body.type
+    }
+    new Car(newCar).save((err,car)=>{
+        if (err){
+            throw err;
+        }
+        if(car){
+            res.render('listCar2',{
+                title:'Finish',
+                car:car
+            });
+        }
+    })
+});
+app.post('/listCar2',requireLogin,(req,res)=>{
+    Car.findOne({_id:req.body.carID,owner:req.user._id})
+    .then((car)=>{
+        car.pricePerhour = req.body.pricePerhour;
+        car.pricePerWeek = req.body.pricePerWeek;
+        car.location = req.body.location;
+        car.image = `https://psu-carrental-app.s3.ap-southeast-1.amazonaws.com/${req.body.image}`;
+        car.save((err,car)=>{
+            if(err){
+                throw err;
+            }
+            if(car){
+                res.redirect('/showCars');
+            }
+        })
+    })
+});
+app.get('/showCars',requireLogin,(req,res)=>{
+    Car.find({})
+    .populate('owner')
+    .sort({date:'desc'})
+    .then((cars)=>{
+        res.render('showCars',{
+            cars:cars
+        })
+    })
+})
+//receive image
+app.post('/uploadImage',requireLogin,upload.any(),(req,res)=>{
+    const form = new formidable.IncomingForm();
+    form.on('file',(field,file)=>{
+        console.log(file);
     });
+    form.on('error',(err)=>{
+        console.log(err);
+    });
+    form.on('end', () =>{
+        console.log('Image received successfully..');
+    });
+    form.parse(req);
 });
 //logout for user
 app.get('/logout',(req,res) => {

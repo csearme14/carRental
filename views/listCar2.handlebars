@@ -1,30 +1,72 @@
 <div class="row">
     <div class="col-sm"></div>
     <div class="col-sm-5">
-    <form action="/listCar2" method="POST">
-        <div class="form-group">
-        <p></p>
-        <label for="pricePerHour">Price per hour</label>
-        <input type="number" name="pricePerhour" id="pricePerHour" class="form-control">
-        </div>
-        <div class="form-group">
-            <label for="pricePerWeek">Price per week</label>
-            <input type="number" name="pricePerWeek" id="pricePerWeek" class="form-control">
-        </div>
-        <div class="form-group">
-            <label for="location">Location</label>
-            <input type="text" name="location" id="location" class="form-control" 
-            placeholder="บ้านเลขที่ ,หมู่ ,ถนน ,อำเภอ ,ตำบล ,จังหวัด ,รหัสไปรษณีย์">
-        </div>
-        <div class="form-group">
-            <!--button class="btn btn-info upload-bth" type="button">Choose image</button>
-            <input type="file" name="image" id="upload-input" style="display: none"-->
-            <input type="file" name="image" id="image">
-        </div>
-        <div class="form-group">
-            <button type="submit" class="btn btn-primary">List a car</button>
-        </div>
-    </form>
+        <form action="/listCar2" method="POST">
+        <input type="hidden" name="carID" value="{{car._id}}">
+
+            <div class="form-group">
+            <p></p>
+            <label for="pricePerHour">Price per hour</label>
+            <input type="number" name="pricePerhour" id="pricePerHour" class="form-control" required>
+            </div>
+
+            <div class="form-group">
+                <label for="pricePerWeek">Price per week</label>
+                <input type="number" name="pricePerWeek" id="pricePerWeek" class="form-control" required>
+            </div>
+
+            <div class="form-group">
+                <label for="location">Location</label>
+                <input type="text" name="location" id="location" class="form-control" 
+                placeholder="บ้านเลขที่ ,หมู่ ,ถนน ,อำเภอ ,ตำบล ,จังหวัด ,รหัสไปรษณีย์" required>
+            </div>
+
+            <div class="form-group">
+                <button class="btn btn-info upload-btn" type="button">Choose image</button>
+                <input type="file" name="image" id="upload-input" style="display: none" required>
+            </div>
+
+            <div class="form-group">
+                <button type="submit" class="btn btn-primary">List a car</button>
+            </div>
+        </form>
     </div>
     <div class="col-sm"></div>
 </div>
+
+<script>
+function fetchLocation(){
+    var location = document.getElementById('location');
+    //var AutoComplete = new google.maps.places.AutoComplete(location); ตั้ง map อัตโนมัติ
+}
+    //jquery code starts here การอัพโหลดภาพ
+    $(document).ready(function(){
+        $('.upload-btn').on('click',function(){
+            $('#upload-input').click();
+        });
+        $('#upload-input').on('change',function(){
+            var uploadInput = $('#upload-input');
+            if(uploadInput.val() !=''){
+                var formData = new FormData();
+                formData.append('image',uploadInput[0].files[0]);
+
+                //make ajax request to sand image to database
+                $.ajax({
+                    url: '/uploadImage',
+                    type: 'POST',
+                    data: formData,
+                    processData: false,
+                    contentType: false,
+                    success: function(){
+                        uploadInput.val('');
+                    }
+                })
+            }
+        })
+    })
+</script>
+
+<!--script type="text/javascript"
+    ตั้ง map อัตโนมัติ
+    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCLcDJM_fSAOM4MJltumXwghfk3N9vMuTQ&libraries=places&callback=initMap&callback=fetchLocation">
+</script!-->
