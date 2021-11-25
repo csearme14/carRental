@@ -238,7 +238,7 @@ app.post('/listCar2',requireLogin,(req,res)=>{
         let imageUrl = {
             imageUrl:`https://psu-carrental-app.s3.ap-southeast-1.amazonaws.com/${req.body.image}`
         };
-        car.pricePerhour = req.body.pricePerhour;
+        car.pricePerHour = req.body.pricePerHour;
         car.pricePerWeek = req.body.pricePerWeek;
         car.location = req.body.location;
         car.image.push(imageUrl);
