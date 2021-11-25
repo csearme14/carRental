@@ -235,10 +235,13 @@ app.post('/listCar',requireLogin,(req,res) => {
 app.post('/listCar2',requireLogin,(req,res)=>{
     Car.findOne({_id:req.body.carID,owner:req.user._id})
     .then((car)=>{
+        let imageUrl = {
+            imageUrl:`https://psu-carrental-app.s3.ap-southeast-1.amazonaws.com/${req.body.image}`
+        };
         car.pricePerhour = req.body.pricePerhour;
         car.pricePerWeek = req.body.pricePerWeek;
         car.location = req.body.location;
-        car.image = `https://psu-carrental-app.s3.ap-southeast-1.amazonaws.com/${req.body.image}`;
+        car.image.push(imageUrl);
         car.save((err,car)=>{
             if(err){
                 throw err;
@@ -249,6 +252,7 @@ app.post('/listCar2',requireLogin,(req,res)=>{
         })
     })
 });
+//แสดงรถ
 app.get('/showCars',requireLogin,(req,res)=>{
     Car.find({})
     .populate('owner')

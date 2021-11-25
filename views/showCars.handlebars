@@ -1,0 +1,9 @@
+{{#each cars}}
+<p></p>
+{{#each image}}
+<img src="{{imageUrl}}" width="300px;">
+{{/each}}
+<p>{{make}} {{model}} {{year}}</p>
+{{else}}
+<p>No cars found</p>
+{{/each}}
