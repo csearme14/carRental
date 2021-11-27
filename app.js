@@ -240,7 +240,7 @@ app.post('/listCar2',requireLogin,(req,res)=>{
         };
         car.pricePerHour = req.body.pricePerHour;
         car.pricePerWeek = req.body.pricePerWeek;
-        car.location = req.body.location;
+        car.location     = req.body.location;
         car.image.push(imageUrl);
         car.save((err,car)=>{
             if(err){
@@ -252,7 +252,7 @@ app.post('/listCar2',requireLogin,(req,res)=>{
         })
     })
 });
-//แสดงรถ
+//showCars
 app.get('/showCars',requireLogin,(req,res)=>{
     Car.find({})
     .populate('owner')
