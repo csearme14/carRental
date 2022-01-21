@@ -10,6 +10,8 @@ const cookieParser  = require('cookie-parser');
 const passport      = require('passport');
 const bcrypt        = require('bcryptjs');
 const formidable    = require('formidable');
+const socketIO      = require('socket.io');
+const https         = require('http');
 //init app
     const app = express();
 // setup body parser middleware
@@ -293,6 +295,16 @@ app.get('/logout',(req,res) => {
         });
     });
 });
-app.listen(port,() => {
+// socket connection
+const server = https.createServer(app);
+const io = socketIO(server);
+io.on('connection',(socket)=>{
+    console.log('Connected to Client');
+    //listen to disconnection
+    socket.on('disconnect',(socket)=>{
+        console.log('Disconnection from Client');
+    });
+});
+server.listen(port,() => {
     console.log(`Server is running on part ${port}`);
 });
