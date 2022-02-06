@@ -17,7 +17,7 @@
             <div class="form-group">
                 <label for="location">Location</label>
                 <input type="text" name="location" id="location" class="form-control" 
-                placeholder="บ้านเลขที่ ,หมู่ ,ถนน ,อำเภอ ,ตำบล ,จังหวัด ,รหัสไปรษณีย์" required>
+                placeholder="street, city, state and zipcode" required>
             </div>
 
             <div class="form-group">
@@ -34,10 +34,10 @@
 </div>
 
 <script>
-function fetchLocation(){
-    var location = document.getElementById('location');
-    //var AutoComplete = new google.maps.places.AutoComplete(location); ตั้ง map อัตโนมัติ
-}
+    function initMap(){
+        var location = document.getElementById('location');
+        var Autocomplete = new google.maps.places.Autocomplete(location);//ตั้ง map อัตโนมัติ
+    }
     //jquery code starts here การอัพโหลดภาพ
     $(document).ready(function(){
         $('.upload-btn').on('click',function(){
@@ -65,7 +65,8 @@ function fetchLocation(){
     })
 </script>
 
-<!--script type="text/javascript"
-    ตั้ง map อัตโนมัติ
-    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCLcDJM_fSAOM4MJltumXwghfk3N9vMuTQ&libraries=places&callback=initMap&callback=fetchLocation">
-</script!-->
+<!-- ตั้ง map อัตโนมัติ callback = fetchLocation-->
+ 
+<script type="text/javascript"
+    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBMBKCUVBeA74u7ZgxAgimeJpF2oPeTdFw&libraries=places&callback=initMap">
+</script>

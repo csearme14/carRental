@@ -5,7 +5,8 @@ module.exports = {
     Facebook_App_SECRET:'64261ba3d49538d1cd9f01841831b5c5',
     //Amazon Web Services for S3 storage
     AWSAccessID: 'AKIAURXB7CL2NOKFMX5X',
-    AWSSecretKey: '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'
+    AWSSecretKey: 'Kj1pCP/+NPeKo3ozYj62dzAUn6JtElSJetkJxUwp',
+    GeocodeAPIKey:'AIzaSyBBfoLAuQp-1y4WFZ6F5DHYGjZGhKYBREU'  //อาจจะต้องเปลี่ยน
 };
 
 //เกิดปัญหาการ login เพราะเฟสเปลี่ยนเป็น เมตามาส

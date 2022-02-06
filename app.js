@@ -300,6 +300,14 @@ const server = https.createServer(app);
 const io = socketIO(server);
 io.on('connection',(socket)=>{
     console.log('Connected to Client');
+    //listen to object ID event
+    socket.on('ObjectID',(ObjectID)=>{
+        console.log('User ID is',ObjectID);
+        Car.findOne({owner:ObjectID})
+        .then((car)=>{
+            socket.emit('car',car);
+        });
+    });
     //listen to disconnection
     socket.on('disconnect',(socket)=>{
         console.log('Disconnection from Client');
