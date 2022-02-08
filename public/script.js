@@ -12,7 +12,7 @@ $(document).ready(function(){
         console.log(car);
             //make an ajax request to fetch latitude and longitude
             $.ajax({
-                url:`https://maps.googleapis.com/maps/api/geocode/json?address=${car.location}&key=AIzaSyBBfoLAuQp-1y4WFZ6F5DHYGjZGhKYBREU`,
+                url:`https://maps.googleapis.com/maps/api/geocode/json?address=${car.location}&key=AIzaSyBMBKCUVBeA74u7ZgxAgimeJpF2oPeTdFw`,
                type:'POST',
                data: JSON,
                processData:true,
