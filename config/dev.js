@@ -6,7 +6,5 @@ module.exports = {
     //Amazon Web Services for S3 storage
     AWSAccessID: 'AKIAURXB7CL2NOKFMX5X',
     AWSSecretKey: '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',
-    GeocodeAPIKey:'AIzaSyBMBKCUVBeA74u7ZgxAgimeJpF2oPeTdFw'  //อาจจะต้องเปลี่ยน
+    GeocodeAPIKey:'AIzaSyBMBKCUVBeA74u7ZgxAgimeJpF2oPeTdFw'
 };
-
-//เกิดปัญหาการ login เพราะเฟสเปลี่ยนเป็น เมตามาส
