@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <style>
+       /* Set the size of the div element that contains the map */
+      #map {
+        height: 400px;  /* The height is 400 pixels */
+        width: 100%;  /* The width is the width of the web page */
+       }
+    </style>
+  </head>
+  <body>
+    <h3>My Google Maps Demo</h3>
+    <!--The div element for the map -->
+    <div id="map"></div>
+    <script>
+
+      //$(document).ready(
+        // Initialize and add the map
+        function initMap(){
+        // The location of Uluru
+        var TH = {lat: 13.5, lng: 100};
+        var BK = {lat:13.736717,lng:100.523186};
+        // The map, centered at Uluru
+        var map = new google.maps.Map(
+        document.getElementById('map'), {zoom: 5, center: BK});
+        // The marker, positioned at Uluru
+        var marker = new google.maps.Marker({position: BK,map: map });
+        //load socket
+        //var socket = io();
+        //listen to allbooks event to receive all books
+        //socket.on('allbooks', function(books) {
+          //console.log('AllBooks', books);
+          //loop through books array
+          //for(var i = 0 ; i<books.books.lenght;i++){
+            //console.log(books.books[i]);
+            // The marker function
+            //function addMarkers(){
+            //  var marker = new google.maps.Marker({position: {lat:books.books[i].coords.lat,lng: books.books[i].coords.lng}, map: map});
+           // }
+            //addMarkers();
+         // }
+        //});
+      }//)
+ 
+    </script>
+    <script async defer
+    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDFLURQE2YUo7n8OK58uaQNrvhZVqyqiFE&callback=initMap">// Kay ใหม่หรืออันเดิมดี ค่อยเปลี่ยนละกัน
+    </script>
+  </body>
+</html>

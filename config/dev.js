@@ -6,5 +6,6 @@ module.exports = {
     //Amazon Web Services for S3 storage
     AWSAccessID: 'AKIAURXB7CL2NOKFMX5X',
     AWSSecretKey: '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',
-    GeocodeAPIKey:'AIzaSyBMBKCUVBeA74u7ZgxAgimeJpF2oPeTdFw'
+    GeocodeAPIKey:'AIzaSyBMBKCUVBeA74u7ZgxAgimeJpF2oPeTdFw',
+    GeolocationAPIKey:'AIzaSyDkNa3DtzQnerc34qi-QUvhrsuAytoD2Dk' //ยังไม่เอาไปใช้งาน 
 };

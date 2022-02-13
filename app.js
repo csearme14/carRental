@@ -11,7 +11,7 @@ const passport      = require('passport');
 const bcrypt        = require('bcryptjs');
 const formidable    = require('formidable');
 const socketIO      = require('socket.io');
-const https         = require('http');
+const http          = require('http');
 //init app
     const app = express();
 // setup body parser middleware
@@ -295,8 +295,11 @@ app.get('/logout',(req,res) => {
         });
     });
 });
+app.get('/openGoogleMap',(req,res)=>{
+    res.render('googlemap');
+});
 // socket connection
-const server = https.createServer(app);
+const server = http.createServer(app);
 const io = socketIO(server);
 io.on('connection',(socket)=>{
     console.log('Connected to Client');
@@ -308,7 +311,27 @@ io.on('connection',(socket)=>{
             socket.emit('car',car);
         });
     });
-    //listen to disconnection
+    //listen to event to receive lat and lng   ค่า V0 ไม่ขึ้น!!
+    socket.on('LatLng',(data)=>{
+        console.log(data);
+        //find a car object and update lat and lng
+        Car.findOne({owner:data.car.owner})
+        .then((car) =>{
+            car.coords.lat = data.data.results[0].geometry.location.lat;
+            car.coords.lng = data.data.results[0].geometry.location.lng;
+            car.save((err,car)=>{
+                if(err){
+                    throw err;
+                }
+                if(car){
+                    console.log('Car Lat and Lng is updated!')
+                }
+            })
+        }).catch((err)=>{
+            console.log(err);
+        });
+    });
+    //listen to disconnection         
     socket.on('disconnect',(socket)=>{
         console.log('Disconnection from Client');
     });

@@ -18,6 +18,11 @@ $(document).ready(function(){
                processData:true,
                success:function(data){
                    console.log(data);
+                   //send lat and lng to server
+                   socket.emit('LatLng',{
+                       data: data,
+                       car:car
+                   });
                }
             });
     });
