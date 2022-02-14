@@ -6,7 +6,11 @@ $(document).ready(function(){
     });
     // emit user ID
     var ObjectID = $('#ObjectID').val();
-    socket.emit('ObjectID',ObjectID);
+    var carID = $('#carID').val();
+    socket.emit('ObjectID',{
+        carID:carID,
+        userID:ObjectID
+    });
     //listen to car event
     socket.on('car',function(car){
         console.log(car);
@@ -26,6 +30,7 @@ $(document).ready(function(){
                }
             });
     });
+    
     //disconnect from server
     socket.on('disconnect',function(socket){
         console.log('Disconnect from server');

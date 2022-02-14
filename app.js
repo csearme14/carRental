@@ -304,12 +304,21 @@ const io = socketIO(server);
 io.on('connection',(socket)=>{
     console.log('Connected to Client');
     //listen to object ID event
-    socket.on('ObjectID',(ObjectID)=>{
-        console.log('User ID is',ObjectID);
-        Car.findOne({owner:ObjectID})
+    socket.on('ObjectID',(oneCar)=>{
+        console.log('One Car ID is',oneCar);
+        Car.findOne({
+            owner:oneCar.userID,
+            _id: oneCar.carID
+    })
         .then((car)=>{
             socket.emit('car',car);
         });
+    });
+    // Find cars and send them to browser for map
+    Car.find({}).then((cars)=>{
+        socket.emit('allcars',{cars:cars});
+    }).catch((err)=>{
+        console.log(err);
     });
     //listen to event to receive lat and lng   ค่า V0 ไม่ขึ้น!!
     socket.on('LatLng',(data)=>{
