@@ -243,6 +243,7 @@ app.post('/listCar2',requireLogin,(req,res)=>{
         car.pricePerHour = req.body.pricePerHour;
         car.pricePerWeek = req.body.pricePerWeek;
         car.location     = req.body.location;
+        car.picture      = `https://psu-carrental-app.s3.ap-southeast-1.amazonaws.com/${req.body.image}`;
         car.image.push(imageUrl);
         car.save((err,car)=>{
             if(err){
@@ -298,6 +299,14 @@ app.get('/logout',(req,res) => {
 app.get('/openGoogleMap',(req,res)=>{
     res.render('googlemap');
 });
+// display one car info
+app.get('/displayCar/:id',(req,res)=>{
+    Car.findOne({_id:req.params.id}).then((car)=>{
+        res.render('displayCar',{
+            car:car
+        });
+    }).catch((err)=>{console.log(err)});
+})
 // socket connection
 const server = http.createServer(app);
 const io = socketIO(server);

@@ -10,7 +10,7 @@
     </style>
   </head>
   <body>
-    <h3>My Google Maps Demo</h3>
+    <br><h3>My Google Maps Demo</h3><br>
     <!--The div element for the map -->
     <div id="map"></div>
     <script>
@@ -22,7 +22,7 @@
         var PK = {lat: 8, lng: 98.33};
         // The map, centered at Uluru
         var map = new google.maps.Map(
-        document.getElementById('map'), {zoom: 10, center: PK});
+        document.getElementById('map'), {zoom: 10.2, center: PK});
         //load socket
         var socket = io();
         //listen to allcars event to receive all cars
@@ -40,7 +40,14 @@
                   });
                   //create info window for each car
                   var infoWindow = new google.maps.InfoWindow({
-                    content:`<h3>${cars.cars[i].make}</h3>`
+                    content:`<a href="/displayCar/${cars.cars[i]._id}">
+                    <h5>${cars.cars[i].make}</h5>
+                    <p><b>Model: </b>${cars.cars[i].model}</p>
+                    <p><b>Year: </b>${cars.cars[i].year}</p>
+                    <p>${cars.cars[i].pricePerHour} per hour</p>
+                    <p>${cars.cars[i].pricePerWeek} per week</p>
+                    <img src="${cars.cars[i].picture}" width="100px">
+                    </a>`
                   });
                   marker.addListener('click',function(){
                     infoWindow.open(map,marker);
