@@ -307,6 +307,15 @@ app.get('/displayCar/:id',(req,res)=>{
         });
     }).catch((err)=>{console.log(err)});
 })
+// open owner profile page
+app.get('/contactOwner/:id',(req,res)=>{
+    User.findOne({_id:req.params.id})
+    .then((owner)=>{
+        res.render('ownerProfile',{
+            owner:owner
+        })
+    }).catch((err)=>{console.log(err)});
+})
 // socket connection
 const server = http.createServer(app);
 const io = socketIO(server);
