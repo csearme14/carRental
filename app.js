@@ -43,7 +43,8 @@ const keys = require('./config/keys');
 const User = require('./models/user');
 const Contact = require('./models/contact');
 const Car = require('./models/car');
-const car = require('./models/car');
+//const car = require('./models/car');
+const Chat = require('./models/chat');
 //connect to mongoDB                    
 mongoose.connect(keys.MongoDB,() => {
     console.log('MongoDB is connected ..');
@@ -321,6 +322,15 @@ const server = http.createServer(app);
 const io = socketIO(server);
 io.on('connection',(socket)=>{
     console.log('Connected to Client');
+    // handle chat room route
+    app.get('/chatOwner/:id',(req,res)=>{
+        User.findOne({_id:req.params.id}).then((owner)=>{
+            res.render('chatRoom',{
+                owner:owner,
+                sender:req.user._id
+            })
+        }).catch((err)=>{console.log(err)});
+    })
     //listen to object ID event
     socket.on('ObjectID',(oneCar)=>{
         console.log('One Car ID is',oneCar);
