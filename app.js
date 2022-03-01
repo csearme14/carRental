@@ -43,8 +43,9 @@ const keys = require('./config/keys');
 const User = require('./models/user');
 const Contact = require('./models/contact');
 const Car = require('./models/car');
-//const car = require('./models/car');
+const car = require('./models/car');
 const Chat = require('./models/chat');
+const chat = require('./models/chat');
 //connect to mongoDB                    
 mongoose.connect(keys.MongoDB,() => {
     console.log('MongoDB is connected ..');
@@ -320,18 +321,94 @@ app.get('/contactOwner/:id',(req,res)=>{
 // socket connection
 const server = http.createServer(app);
 const io = socketIO(server);
+// connect to client
 io.on('connection',(socket)=>{
     console.log('Connected to Client');
     // handle chat room route
     app.get('/chatOwner/:id',(req,res)=>{
-        User.findOne({_id:req.params.id}).then((owner)=>{
+        Chat.findOne({sender:req.params.id,receiver:req.user._id})
+        .then((chat)=>{
+            if(chat){
+                chat.date = new Date(),
+                chat.senderRead = false;
+                chat.receiverRead = true;
+                chat.save()
+                .then((chat) =>{
+                    res.redirect(`/chat/${chat._id}`);
+                }).catch((err)=>{console.log(err)});
+            }else{
+                Chat.findOne({sender:req.user._id,receiver:req.params.id})
+                .then((chat)=>{
+                    if (chat) {
+                        chat.senderRead = true;
+                        chat.receiverRead = false;
+                        chat.date = new Date()
+                        chat.save()
+                        .then((chat) => {
+                            res.redirect(`/chat/${chat._id}`);
+                        }).catch((err)=>{console.log(err)});
+                    }else {
+                        const newChat = {
+                            sender: req.user._id,
+                            receiver: req.params.id,
+                            date: new Date()
+                        }
+                        new Chat(newChat).save().then((chat)=>{
+                            res.redirect(`/chat/${chat._id}`);
+                       }).catch((err)=>{console.log(err)});
+                    } 
+                }).catch((err) => {console.log(err)});
+            }
+        }).catch((err)=>{console.log(err)});
+    });
+
+    //Handle /chat/chat ID route
+    app.get('/chat/:id',(req,res)=>{
+        Chat.findOne({_id:req.params.id})
+        .populate('sender')
+        .populate('receiver')
+        .populate('dialogue.sender')
+        .populate('dialogue.receiver')
+        .then((chat)=>{
             res.render('chatRoom',{
-                owner:owner,
-                sender:req.user._id
+                chat:chat
             })
         }).catch((err)=>{console.log(err)});
     })
-    //listen to object ID event
+
+    //Post request to /chat/ID
+    app.post('/chat/:id',(req,res)=>{
+        Chat.findById({_id:req.params.id})
+        .populate('sender')
+        .populate('receiver')
+        .populate('dialogue.sender')
+        .populate('dialogue.receiver')
+        .then((chat)=>{
+            const newDialogue = {
+                sender:req.user._id,
+                date: new Date(),
+                senderMessage: req.body.message
+            }
+            chat.dialogue.push(newDialogue)
+            chat.save((err,chat)=>{
+                if(err){
+                    console.log(err);
+                }
+                if(chat){
+                    Chat.findOne({_id:chat._id})
+                    .populate('sender')
+                    .populate('receiver')
+                    .populate('dialogue.sender')
+                    .populate('dialogue.receiver')
+                    .then((chat)=>{
+                        res.render('chatRoom',{chat:chat});
+                    }).catch((err)=>{console.log(err)});
+                }
+            })
+        }).catch((err)=> {console.log(err)});
+    })
+
+    //Listen to object ID event
     socket.on('ObjectID',(oneCar)=>{
         console.log('One Car ID is',oneCar);
         Car.findOne({

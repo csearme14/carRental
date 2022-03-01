@@ -15,6 +15,14 @@ const chatSchema = new Schema ({
         default: Date,
         default: Date.now
     },
+    senderRead:{
+        type: Boolean,
+        default: false
+    },
+    receiverRead:{
+        type: Boolean,
+        default: false
+    },
     dialogue:[{
         sender:{
             type: Schema.Types.ObjectId,
