@@ -3,19 +3,19 @@
     <h3>Chat Room</h3>
     <ul id="list">
         {{#each chat}}
-            {{#each dialogue}}
-                <h3>{{sender.firstname}}</h3>
-                <p>{{senderMessage}}</p>
-                <small>{{date}}</small>
-                <hr>
-                    {{#if receiverMessage}}
-                    <h3>{{receiver.firstname}}</h3>
-                    <p>{{receiverMessage}}</p>
-                    <small>{{date}}</small>
-                    {{else}}
-                    {{/if}}
-                <hr>
-            {{/each}}
+        {{#each dialogue}}
+        <h3>{{sender.firstname}}</h3>
+        <p>{{senderMessage}}</p>
+        <small>{{date}}</small>
+        <hr>
+        {{#if receiverMessage}}
+        <h3>{{receiver.firstname}}</h3>
+        <p>{{receiverMessage}}</p>
+        <small>{{date}}</small>
+        {{else}}
+        {{/if}}
+        <hr>
+        {{/each}}
         {{else}}
         <p>No messages</p>
         {{/each}}
