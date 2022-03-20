@@ -46,6 +46,9 @@ const carSchema = new Schema({
     },
     picture:{
         type: String
+    },
+    wallet:{
+        type: Number
     }
 });
 module.exports = mongoose.model('Car',carSchema);

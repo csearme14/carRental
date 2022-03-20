@@ -46,6 +46,7 @@ const Car = require('./models/car');
 const car = require('./models/car');
 const Chat = require('./models/chat');
 const chat = require('./models/chat');
+const Budjet = require('./models/budjet');
 //connect to mongoDB                    
 mongoose.connect(keys.MongoDB,() => {
     console.log('MongoDB is connected ..');
@@ -318,6 +319,24 @@ app.get('/contactOwner/:id',(req,res)=>{
         })
     }).catch((err)=>{console.log(err)});
 })
+//renting a car
+app.get('/RentCar/:id',(req,res)=>{
+    Car.findOne({_id:req.params.id})
+    .then((car) =>{
+        res.render('calculate',{
+            car:car
+        })
+    }).catch((err) => {console.log(err)});
+})
+// calculate total POST request
+app.post('/calculateTotal/:id',(req,res) =>{
+    Car.findOne({_id:req.params.id})
+    .then((car) =>{
+        console.log(req.body);
+        console.log('Type is',typeof(req.body.week));
+        console.log('Type is',typeof(req.body.hour));
+    })
+})
 // socket connection
 const server = http.createServer(app);
 const io = socketIO(server);
@@ -411,7 +430,7 @@ io.on('connection',(socket)=>{
         Car.findOne({
             owner:oneCar.userID,
             _id: oneCar.carID
-    })
+        })
         .then((car)=>{
             socket.emit('car',car);
         });

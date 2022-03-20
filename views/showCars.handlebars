@@ -1,8 +1,9 @@
 {{#each cars}}
+<a href="/displayCar/{{_id}}">
 <p></p>
 <div class="media">
     <input type="hidden" id="carID" value="{{_id}}">
-  <img src="{{owner.image}}" class="mr-3" width="64px;" height="64px;">
+    <img src="{{owner.image}}" class="mr-3" width="64px;" height="64px;">
     <div class="media-body">
         <h5 class="mt-0">{{make}} {{model}} {{year}}</h5>
         <div class="row">
@@ -18,10 +19,9 @@
         <p>฿{{pricePerWeek}} per week</p>
         <small>{{location}}</small> <br>
         <small>{{date}}</small>
-        <div><button type="submit" class="btn btn-primary">Rent</button></div>
-        
     </div>
 </div>
+</a>
 <hr>
 {{else}}
 <p>No cars found</p>
