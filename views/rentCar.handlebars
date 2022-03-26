@@ -1,0 +1,64 @@
+<div class="container mt-4">
+    <h1>เช่ารถ {{car.make}} {{ car.model }}</h1>
+    <div class="d-flex mt-5 justify-content-center">
+        <img src="{{car.picture}}" width="30%">
+        <div class="ml-4">
+            <h4>รายละเอียดรถ</h4>
+            <p class="card-text">รุ่น: {{car.make}}</p>
+            <p class="card-text">โมเดล: {{car.model}}</p>
+            <p class="card-text">ปี: {{car.year}}</p>
+            <p class="card-text">เครื่องยนต์: {{car.type}}</p>
+        </div>
+    </div>
+    <hr>
+    <div class="d-flex justify-content-center">
+       [ ชื่อผู้เช่ารถ : {{ user.firstname }} {{ user.lastname }} ] | [ อีเมล์ติดต่อ : {{user.email}} ] | [ จำนวนรถที่เช่า : 1 คัน ]
+    </div>
+    <hr>
+    <form action="/recheckRentCar" method="POST">
+        <input type="hidden" name="user" value="{{ user._id }}" />
+        <input type="hidden" name="car" value="{{ car._id }}" />
+        <div class="form-group row">
+            <label for="staticEmail" class="col-sm-4 col-form-label">จำนวนวันที่ไป</label>
+            <div class="col-sm-8">
+                <select class="form-control" name="amountDay">
+                    <option value="">เลือกจำนวนวันที่ต้องการ</option>
+                    <option value="2">2 วัน [ ราคา 3,200 บาท]</option>
+                    <option value="4">4 วัน [ ราคา 4,200 บาท]</option>
+                    <option value="6">6 วัน [ ราคา 5,000 บาท]</option>
+                    <option value="7">7 วัน [ ราคา 10,000 บาท]</option>
+                    <option value="10">10 วัน [ ราคา 12,000 บาท]</option>
+                    <option value="22">22 วัน [ ราคา 22,222 บาท]</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="form-group row">
+            <label for="staticEmail" class="col-sm-4 col-form-label">สถานที่ไป</label>
+            <div class="col-sm-8">
+                <input type="text" class="form-control" name="wherePlace">
+            </div>
+        </div>
+
+        <div class="form-group row">
+            <label for="staticEmail" class="col-sm-4 col-form-label">วันเวลาที่ออกเดินทาง</label>
+            <div class="col-sm-8">
+                <input type="datetime-local" class="form-control" name="dateTime">
+            </div>
+        </div>
+
+        <div class="form-group row">
+            <label for="staticEmail" class="col-sm-4 col-form-label">จุดนัดพบที่จะออกเดินทาง</label>
+            <div class="col-sm-8">
+                <textarea name="meetArea" class="form-control"> </textarea>
+            </div>
+        </div>
+        <div class="form-group row mt-2">
+            <label for="staticEmail" class="col-sm-4 col-form-label"></label>
+            <div class="col-sm-8">
+                <input type="submit" class="btn btn-primary" value="ดำเนินการต่อ" />
+                <a class="btn btn-danger" href="/showCars">ยกเลิก</a>
+            </div>
+        </div>
+    </form>
+</div>
