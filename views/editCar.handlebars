@@ -1,0 +1,100 @@
+<div class="row">
+    <div class="col-sm"></div>
+    <div class="col-sm-10 mt-4">
+        <form action="/updateCar/{{car._id}}" method="POST">
+        <input type="hidden" value="step1" name="statusUpdate">
+            <div class="form-group">
+                <label for="make">รุ่น</label>
+                <input type="text" name="make" id="make" class="form-control" value="{{car.make}}">
+            </div>
+            <div class="form-group">
+                <label for="model">โมเดล</label>
+                <input type="text" name="model" id="model" class="form-control" value="{{car.model}}" required>
+            </div>
+            <div class="form-group">
+                <label for="year">ปี</label>
+                <input type="numbar" name="year" id="year" class="form-control" value="{{car.year}}" required>
+            </div>
+
+            <div class="form-group">
+                <label for="year">เลขทะเบียน</label>
+                <input type="numbar" name="carNo" id="year" class="form-control" value="{{car.carNo}}" required>
+            </div>
+
+            <div class="form-group">
+                <label for="type">เครื่องยนต์</label>
+                <select name="type" id="type" class="form-control">
+                    <option value="110_cc">110 CC</option>
+                    <option value="125_cc">125 CC</option>
+                    <option value="150_cc">150 CC</option>
+                    <option value="155_cc">155 CC</option>
+                </select>
+            </div>
+
+            <div class="form-group"><br>
+                <label for="pricePerHour">ราคาต่อชั่วโมง</label>
+                <input type="number" name="pricePerHour" id="pricePerHour" class="form-control" value="{{car.pricePerHour}}" required>
+            </div>
+
+            <div class="form-group">
+                <label for="pricePerWeek">ราคาต่อสัปดาห์</label>
+                <input type="number" name="pricePerWeek" id="pricePerWeek" class="form-control" value="{{car.pricePerWeek}}" required>
+            </div>
+
+            <div class="form-group">
+                <label for="location">ตำแหน่งรถ</label>
+                <input type="text" name="location" id="location" class="form-control" 
+                placeholder="street, city, state and zipcode" value="{{car.location}}" required >
+            </div>
+
+            <div class="form-group">
+                <button class="btn btn-info upload-btn" type="button">เลือกรูปภาพรถ</button>
+                <input type="file" name="image" id="upload-input" style="display: none">
+            </div>
+
+            <input type="hidden" name="oldImage" value="{{car.picture}}" >
+            <div class="form-group">
+                <button type="submit" class="btn btn-primary">ถัดไป</button>
+            </div>
+        </form>
+    </div>
+    <div class="col-sm"></div>
+</div>
+
+<script>
+    function initMap(){
+        var location = document.getElementById('location');
+        var Autocomplete = new google.maps.places.Autocomplete(location);//ตั้ง map อัตโนมัติ
+    }
+    //jquery code starts here การอัพโหลดภาพ
+    $(document).ready(function(){
+        $('.upload-btn').on('click',function(){
+            $('#upload-input').click();
+        });
+        $('#upload-input').on('change',function(){
+            var uploadInput = $('#upload-input');
+            if(uploadInput.val() !=''){
+                var formData = new FormData();
+                formData.append('image',uploadInput[0].files[0]);
+
+                //make ajax request to sand image to database
+                $.ajax({
+                    url: '/uploadImage',
+                    type: 'POST',
+                    data: formData,
+                    processData: false,
+                    contentType: false,
+                    success: function(){
+                        uploadInput.val('');
+                    }
+                })
+            }
+        })
+    })
+</script>
+
+<!-- ตั้ง map อัตโนมัติ callback = fetchLocation-->
+ 
+<script type="text/javascript"
+    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBMBKCUVBeA74u7ZgxAgimeJpF2oPeTdFw&libraries=places&callback=initMap">
+</script>
