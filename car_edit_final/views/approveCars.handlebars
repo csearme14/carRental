@@ -1,0 +1,45 @@
+<div class="row">
+<table class="table mt-5">
+  <thead class="thead-light">
+    <tr>
+      <th scope="col">#</th>
+      <th scope="col">รุ่น</th>
+      <th scope="col">ทะเบียน</th>
+      <th scope="col">ผู้เช่า</th>
+      <th scope="col">ระยะเวลา</th>
+      <th scope="col">วันที่ออกเดินทาง</th>
+      <th scope="col"></th>
+    </tr>
+  </thead>
+  <tbody>
+    {{#each rentCarList}}
+      <tr>
+        <th scope="row">1</th>
+        <td>{{ car.model }}</td>
+        <td>{{ car.carNo }}</td>
+        <td>{{ user.firstname }} {{ user.lastname }}</td>
+        <td>{{ amountDay }} วัน</td>
+        <td>{{ dateThai }}</td>
+        <td>
+          <div class="d-flex">
+            <form action="/changeStatus" method="post"> 
+            <input type="hidden" value="approve" name="status">
+            <input type="hidden" value="{{_id}}" name="rendId">
+            <input type="hidden" value="{{car._id}}" name="carId">
+            <input type="submit" class="btn btn-primary" value="อนุมัติ">
+          </form>
+          <form action="/changeStatus" method="post"> 
+            <input type="hidden" value="cancel" name="status">
+            <input type="hidden" value="{{_id}}" name="rendId">
+            <input type="hidden" value="{{car._id}}" name="carId">
+            <input type="submit" class="btn btn-danger ml-3" value="ยกเลิก">
+          </form>
+          </div>
+            
+        </td>
+      </tr>
+    {{/each}}
+    
+  </tbody>
+</table>
+</div>

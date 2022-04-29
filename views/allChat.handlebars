@@ -1,0 +1,12 @@
+<div class="container">
+    <h1 class="mt-3 mb-3">แชททั้งหมด</h1>
+    {{#each allChat}}
+    <div>
+        <a href="/chat/{{_id}}" style="text-decoration: none; color: black">
+            <p>จาก : {{ sender.firstname }} {{ sender.lastname }}</p>
+            <span>ข้อความ :{{#each dialogue}}{{#if @last}}{{senderMessage}}{{/if}}{{/each}}</span>
+        </a>
+        <hr>
+    </div>
+    {{/each}}
+</div>

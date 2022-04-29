@@ -1,0 +1,17 @@
+<script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<script>
+(async () => {
+
+const { value: accept } = await Swal.fire({
+  title: 'การชำระเงินสำเร็จ',
+  icon: 'success',
+})
+
+if (accept) {
+  window.location.href = '/addCar'
+}
+
+})()
+
+</script>

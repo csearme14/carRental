@@ -1,0 +1,17 @@
+<script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<script>
+(async () => {
+
+const { value: accept } = await Swal.fire({
+  title: 'การชำระเงินล้มเหลว',
+  icon: 'error',
+})
+
+if (accept) {
+  window.location.href = '/showCars'
+}
+
+})()
+
+</script>
