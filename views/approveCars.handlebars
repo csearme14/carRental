@@ -14,7 +14,7 @@
   <tbody>
     {{#each rentCarList}}
       <tr>
-        <th scope="row">1</th>
+        <th scope="row">{{inc @index }}</th>
         <td>{{ car.model }}</td>
         <td>{{ car.carNo }}</td>
         <td>{{ user.firstname }} {{ user.lastname }}</td>
@@ -22,6 +22,7 @@
         <td>{{ dateThai }}</td>
         <td>
           <div class="d-flex">
+            {{#if showButton}}
             <form action="/changeStatus" method="post"> 
             <input type="hidden" value="approve" name="status">
             <input type="hidden" value="{{_id}}" name="rendId">
@@ -34,6 +35,14 @@
             <input type="hidden" value="{{car._id}}" name="carId">
             <input type="submit" class="btn btn-danger ml-3" value="ยกเลิก">
           </form>
+          {{else}}
+          <form action="/changeStatus" method="post"> 
+            <input type="hidden" value="return" name="status">
+            <input type="hidden" value="{{_id}}" name="rendId">
+            <input type="hidden" value="{{car._id}}" name="carId">
+            <input type="submit" class="btn btn-success ml-3" value="คืนค่า">
+          </form>
+          {{/if}}
           </div>
             
         </td>

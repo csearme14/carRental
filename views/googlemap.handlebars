@@ -25,6 +25,11 @@
         document.getElementById('map'), {zoom: 10.2, center: PK});
         //load socket
         var socket = io();
+
+        const urlParams = new URLSearchParams(window.location.search);
+        const myParam = urlParams.get('carId');
+
+        console.log(myParam)
         //listen to allcars event to receive all cars
         socket.on('allcars', function(cars){
         
@@ -34,11 +39,23 @@
               console.log(cars.cars[i]);
               // The marker, positioned at Uluru
               function addMarker(){
-                  var marker = new google.maps.Marker({
-                  position: {lat:cars.cars[i].coords.lat,
-                             lng:cars.cars[i].coords.lng },
-                  map: map 
-                  });
+                  var marker;
+
+                  if (cars.cars[i]._id == myParam) {
+                    marker = new google.maps.Marker({
+                        position: {lat:cars.cars[i].coords.lat,
+                                  lng:cars.cars[i].coords.lng },
+                        map: map,
+                        icon: { url: 'http://maps.google.com/mapfiles/ms/icons/blue-dot.png' } 
+                        });
+                  } else {
+                    marker = new google.maps.Marker({
+                        position: {lat:cars.cars[i].coords.lat,
+                                  lng:cars.cars[i].coords.lng },
+                        map: map,
+                        icon: { url: 'http://maps.google.com/mapfiles/ms/icons/red-dot.png' } 
+                        });
+                  }
                   //create info window for each car
                   var infoWindow = new google.maps.InfoWindow({
                     content:`<a href="/displayCar/${cars.cars[i]._id}"></a>

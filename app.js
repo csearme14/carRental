@@ -57,6 +57,11 @@ mongoose.connect(keys.MongoDB,() => {
 });
 //setup view engine
 app.engine('handlebars',exphbs({
+    helpers: {
+        inc: function (value, options) {
+            return parseInt(value) + 1;
+        }
+    },
     defaultLayout:'main',
     handlebars: allowInsecurePrototypeAccess(Handlebars)
 }));
@@ -90,6 +95,9 @@ app.get('/signup',ensureGuest,(req,res) => {
 app.post('/signup',ensureGuest,(req , res) => {     
     console.log(req.body);
     let errors = [];
+    if (req.body.image !== '') {
+        req.body.picture = `https://psu-carrental-app.s3.ap-southeast-1.amazonaws.com/${req.body.image}`
+    }
     if (req.body.password !== req.body.password2){  //เปรียบเทียบรหัสผ่าน
         errors.push({text:'Password does not match'}); 
     }
@@ -107,7 +115,8 @@ app.post('/signup',ensureGuest,(req , res) => {
             phone:      req.body.phone,
             gender:     req.body.gender,
             age:        req.body.age,
-            id_card:    req.body.id_card
+            id_card:    req.body.id_card,
+            imageSsn:   req.body.picture
         })
     }else{
         User.findOne({email:req.body.email})
@@ -125,7 +134,8 @@ app.post('/signup',ensureGuest,(req , res) => {
                     phone:      req.body.phone,
                     gender:     req.body.gender,
                     age:        req.body.age,
-                    id_card:    req.body.id_card
+                    id_card:    req.body.id_card,
+                    imageSsn:   req.body.picture
                 });
             }else{
                 //encypt password => hashfuntion salt = 10
@@ -136,7 +146,8 @@ app.post('/signup',ensureGuest,(req , res) => {
                     firstname:  req.body.firstname,
                     lastname:   req.body.lastname,
                     email:      req.body.email,
-                    password:   hash
+                    password:   hash,
+                    imageSsn:   req.body.picture
                 }
                 new User(newUser).save((err,user) => {
                     if (err){
@@ -429,7 +440,7 @@ app.get('/addCar', async (req,res) => {
     let rentDetail = null
 
     if (carUser) {
-        rentDetail = await rentCar.findOne({car: carUser._id, returnDate: {$gte: nowDate}}).populate('user')
+        rentDetail = await rentCar.findOne({car: carUser._id, returnDate: {$gte: nowDate}, status: 'approve'}).populate('user')
     }
 
     if (rentDetail) {
@@ -470,9 +481,12 @@ app.post('/changeStatus', async (req, res) => {
         if (data.status === 'approve') {
             await Car.updateOne({_id: data.carId}, {canRent: false, adminApprove: true})
             await rentCar.updateOne({_id: data.rendId}, {status: 'approve'})
-        } else {
+        } else if (data.status === 'cancel'){
             await Car.updateOne({_id: data.carId}, {canRent: true})
             await rentCar.updateOne({_id: data.rendId}, {status: 'cancel'})
+        } else {
+            await Car.updateOne({_id: data.carId}, {canRent: true, adminApprove: false})
+            await rentCar.updateOne({_id: data.rendId}, {status: 'timeout'})
         }
         res.redirect('/approveCar')
     } catch (e) {
@@ -507,9 +521,12 @@ app.get('/chatAdmin', async (req, res) => {
 
 })
 app.get('/approveCar', async (req,res) => {
-    const tempRentCarList = await rentCar.find({status: 'pending'}).populate('car').populate('user')
+    const tempRentCarList = await rentCar.find({$or: [{status: 'approve'}, {status: 'pending'}]}).populate('car').populate('user')
     let rentCarList = JSON.parse(JSON.stringify(tempRentCarList))
     rentCarList.forEach(element => {
+        if (element.status === 'pending') {
+            element.showButton = true
+        }
         element.dateThai = new Date(element.dateTime).toLocaleString('th', {
             timeZone: 'Asia/Bangkok',
             year: 'numeric',

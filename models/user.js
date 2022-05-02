@@ -48,6 +48,9 @@ const userSchema = new Schema({
         type: Boolean,
         default: false
     },
+    imageSsn: {
+        type: String,
+    },
     admin: {
         type: Boolean,
         default: false
